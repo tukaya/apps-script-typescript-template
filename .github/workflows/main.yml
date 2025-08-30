@@ -30,19 +30,15 @@ jobs:
       - name: Build project
         run: npm run build
 
-      - name: Create clasp config
+      - name: Create clasp configuration
         run: |
-          if [ "$GITHUB_REF" == "refs/heads/main" ]; 
-          then
-            echo "Deploying to PRODUCTION..."
-            $scriptId = ${{ secrets.SCRIPT_ID_PROD }}
-          else
-            $scriptId = ${{ secrets.SCRIPT_ID_DEV }}
-          fi
           echo '{
-          "scriptId": $scriptId,
-          "rootDir": "dist"
+            "scriptId": "'"$SCRIPT_ID"'",
+            "rootDir": "dist"
           }' > .clasp.json
+        env:
+          # Determine which secret to use using a GitHub expression
+          SCRIPT_ID: ${{ github.ref == 'refs/heads/main' && secrets.SCRIPT_ID_PROD || secrets.SCRIPT_ID_DEV }}
 
       - uses: actions/setup-node@v3
         with:
