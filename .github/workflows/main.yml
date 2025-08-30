@@ -49,12 +49,6 @@ jobs:
           echo "${CLASP_CREDENTIALS}" > "${HOME}/.clasprc.json"  
           npm install -g @google/clasp
           
-          # Verify we're in the right directory and what files exist
-          pwd
-          ls -la
-          echo "Contents of dist directory:"
-          ls -la dist/
-          
-          
+          npm run deploy
         env:
           CLASP_CREDENTIALS: ${{vars.CLASPRC_JSON}}
