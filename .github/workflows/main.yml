@@ -32,13 +32,13 @@ jobs:
 
       - name: Create clasp config
         run: |
-          if [ "$GITHUB_REF" == "refs/heads/main" ]; then
-              echo "Deploying to PRODUCTION..."
-              $scriptId = ${{ secrets.SCRIPT_ID_PROD }}
-            else
-              $scriptId = ${{ secrets.SCRIPT_ID_DEV }}
-              npm run deploy
-            fi
+          if [ "$GITHUB_REF" == "refs/heads/main" ]; 
+          then
+            echo "Deploying to PRODUCTION..."
+            $scriptId = ${{ secrets.SCRIPT_ID_PROD }}
+          else
+            $scriptId = ${{ secrets.SCRIPT_ID_DEV }}
+          fi
           echo '{
           "scriptId": $scriptId,
           "rootDir": "dist"
