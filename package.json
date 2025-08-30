@@ -8,7 +8,7 @@
   "scripts": {
     "clean": "rimraf build dist",
     "bundle": "rollup -c rollup.config.mjs",
-    "build": "npm run clean && npm run bundle && ncp appsscript.json dist/appsscript.json",
+    "build": "npm run clean && npm run bundle && ncp appsscript.json dist/appsscript.json && ncp .clasp.json dist/.clasp.json",
     "license": "license-check-and-add add -f license-config.json",
     "test": "jest test/ --passWithNoTests --detectOpenHandles",
     "deploy:dev": "ncp .clasp-dev.json .clasp.json && clasp push -f"
