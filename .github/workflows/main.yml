@@ -29,7 +29,7 @@ jobs:
         
       - name: Build project
         run: npm run build
-      
+
       - name: Run tests
         run: npm run test
 
@@ -41,16 +41,25 @@ jobs:
           echo ${CLASP_CREDENTIALS}
           echo "${CLASP_CREDENTIALS}" > "${HOME}/.clasprc.json"  
           npm install -g @google/clasp
-
+          
           # Verify we're in the right directory and what files exist
           pwd
           ls -la
           echo "Contents of dist directory:"
           ls -la dist/
-
-          npx clasp-env --folder dist --scriptId ${SCRIPT_ID}
+          
+          if [ "$GITHUB_REF" == "refs/heads/main" ]; then
+            echo "Deploying to PRODUCTION..."
+            npx clasp-env --folder dist --scriptId $PROD_SCRIPT_ID
+          else
+            echo "Deploying to DEVELOPMENT..."
+            npx clasp-env --folder dist --scriptId $DEV_SCRIPT_ID
+          fi
+          
+          # Use clasp push without -f flag to respect .claspignore
           cd dist
           clasp push
         env:
           CLASP_CREDENTIALS: ${{vars.CLASPRC_JSON}}
-          SCRIPT_ID: ${{ github.ref == 'refs/heads/main' && secrets.SCRIPT_ID_PROD || secrets.SCRIPT_ID_DEV }}
+          DEV_SCRIPT_ID:  ${{secrets.SCRIPT_ID_DEV}}
+          PROD_SCRIPT_ID:   ${{secrets.SCRIPT_ID_PROD}}
