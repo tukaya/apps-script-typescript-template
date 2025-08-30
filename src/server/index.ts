@@ -15,5 +15,10 @@
  */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { hello } from './example-module';
+import { onInstall, onOpen, showSidebar } from './menuitems';
 
 console.log(hello());
+
+onInstall();
+onOpen();
+showSidebar();
