@@ -52,9 +52,5 @@ jobs:
             echo "Deploying to DEVELOPMENT..."
             npm run deploy
           fi
-          
-          # Use clasp push without -f flag to respect .claspignore
-          cd dist
-          clasp push
         env:
           CLASP_CREDENTIALS: ${{vars.CLASPRC_JSON}}
