@@ -29,16 +29,9 @@ jobs:
         
       - name: Build project
         run: npm run build
-
-      - name: Create clasp configuration
-        run: |
-          echo '{
-            "scriptId": "'"$SCRIPT_ID"'",
-            "rootDir": "dist"
-          }' > .clasp.json
-        env:
-          # Determine which secret to use using a GitHub expression
-          SCRIPT_ID: ${{ github.ref == 'refs/heads/main' && secrets.SCRIPT_ID_PROD || secrets.SCRIPT_ID_DEV }}
+      
+      - name: Run tests
+        run: npm run test
 
       - uses: actions/setup-node@v3
         with:
@@ -48,7 +41,11 @@ jobs:
           echo ${CLASP_CREDENTIALS}
           echo "${CLASP_CREDENTIALS}" > "${HOME}/.clasprc.json"  
           npm install -g @google/clasp
-          
-          npm run deploy
+
+          npx clasp-env --folder dist --scriptId ${SCRIPT_ID}
+
+          cd dist
+          clasp push
         env:
           CLASP_CREDENTIALS: ${{vars.CLASPRC_JSON}}
+          SCRIPT_ID: ${{ github.ref == 'refs/heads/main' && secrets.SCRIPT_ID_PROD || secrets.SCRIPT_ID_DEV }}
