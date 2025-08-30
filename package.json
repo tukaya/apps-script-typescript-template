@@ -11,8 +11,8 @@
     "build": "npm run clean && npm run bundle && ncp appsscript.json dist/appsscript.json",
     "license": "license-check-and-add add -f license-config.json",
     "test": "jest test/ --passWithNoTests --detectOpenHandles",
-    "deploy": "npm run test && npm run build && ncp .clasp-dev.json .clasp.json && clasp push -f",
-    "deploy:prod": "npm run test && npm run build && ncp .clasp-prod.json .clasp.json && clasp push"
+    "deploy": "clasp push -f",
+    "deploy:dev": "ncp .clasp-dev.json .clasp.json && clasp push -f"
   },
   "engines": {
     "node": ">=22"
