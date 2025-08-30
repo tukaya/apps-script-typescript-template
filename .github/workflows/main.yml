@@ -42,8 +42,13 @@ jobs:
           echo "${CLASP_CREDENTIALS}" > "${HOME}/.clasprc.json"  
           npm install -g @google/clasp
 
-          npx clasp-env --folder dist --scriptId ${SCRIPT_ID}
+          # Verify we're in the right directory and what files exist
+          pwd
+          ls -la
+          echo "Contents of dist directory:"
+          ls -la dist/
 
+          npx clasp-env --folder dist --scriptId ${SCRIPT_ID}
           cd dist
           clasp push
         env:
