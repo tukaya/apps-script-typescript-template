@@ -1,0 +1,60 @@
+
+name: Build and Deploy Apps Script
+
+on:
+  push:
+    branches: [ '**' ]
+  pull_request:
+    branches: [ '**' ]
+  workflow_dispatch:
+
+jobs:
+  publish:
+    concurrency:
+      group: ${{ github.head_ref || github.ref }}
+      cancel-in-progress: false
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+        
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Build project
+        run: npm run build
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+      - name: DEPLOY
+        run: |
+          echo ${CLASP_CREDENTIALS}
+          echo "${CLASP_CREDENTIALS}" > "${HOME}/.clasprc.json"  
+          npm install -g @google/clasp
+          
+          # Verify we're in the right directory and what files exist
+          pwd
+          ls -la
+          echo "Contents of dist directory:"
+          ls -la dist/
+          
+          if [ "$GITHUB_REF" == "refs/heads/main" ]; then
+            echo "Deploying to PRODUCTION..."
+            npm run deploy:prod
+          else
+            echo "Deploying to DEVELOPMENT..."
+            npm run deploy
+          fi
+          
+          # Use clasp push without -f flag to respect .claspignore
+          cd dist
+          clasp push
+        env:
+          CLASP_CREDENTIALS: ${{vars.CLASPRC_JSON}}
